@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Home</title>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+
+<body>
+    <div class="header">
+        <div class="content">
+            <h1>The Jermaine Quiz</h1>
+            <p>The quiz where I talk about anything that is kind of interesting to me right now!</p>
+        </div>
+    <img src="https://pbs.twimg.com/profile_images/1348823520982269953/A2TFNzZ5_400x400.jpg" alt="logo" class="logo">
+</div>
+
+<div id="authentication">
+    <input type="password" id="password" placeholder="Enter password" />
+    <button onclick="authenticate()">Start Quiz</button>
+</div>
+
+
+<div id="quiz-container" class="hidden">
+    <div id="question-container"></div>
+    <div id="answers-container"></div>
+    <button id="next-button" class="hidden" onclick="nextQuestion()">Next</button>
+    <p id="feedback"></p>
+</div>
+
+<div id="result-container" class="hidden">
+    <h2>Your Score: <span id="score"></span></h2>
+</div>
+
+<script>
+    //initial variable declarations
+let indexPresentQuestion = 0;
+let score = 0;
+
+function authenticate() {
+    const passwordInput = document.getElementById("password").value; // Takes input and puts it in password var
+    if (passwordInput === "CPAN134") { // if the password is correct
+        //hides authentication menu
+        const authContainer = document.getElementById("authentication");
+        authContainer.parentNode.removeChild(authContainer);
+
+        //allows quiz to be viewable
+        document.getElementById("quiz-container").classList.remove("hidden");
+        //calls question function to begin quiz
+        Question();
+    }
+    else{
+        //prints a try again message
+        feedback.textContent = "Password Incorrect, please try again!"
+    }
+}
+
+function Question(){
+    //initializes variables for the different containers
+    const questionContainer = document.getElementById("question-container");
+    const optionsContainer = document.getElementById("answers-container");
+    const feedback = document.getElementById("feedback");
+
+    //clears containers so multiple questions dont pile up
+    optionsContainer.innerHTML = '';
+    feedback.textContent = '';
+
+    //switch statement for each quiz question correlating to their specific index
+    switch (indexPresentQuestion) {
+                case 0:
+                    questionContainer.textContent = "Question 1 of 4: What year did the Dragon Ball Z anime first air?";
+                    ["1989", "1991", "1986", "1994"].forEach((option, index) => {
+                        const button = document.createElement("button"); //creates button for each option
+                        button.textContent = option;
+                        button.onclick = () => checkAnswer(index, 0); //calls checkAnswer to see validity of answer
+                        optionsContainer.appendChild(button);
+                    });
+                    break;  
+                case 1:
+	                questionContainer.textContent = "Question 2 of 4: Which NBA player has the most championship rings in the NBA";
+	                ["Michael Jordan", "Stephen Curry", "Bill Russel", "Lebron James"].forEach((option, index) => {
+	                    const button = document.createElement("button");
+	                    button.textContent = option;
+	                    button.onclick = () => checkAnswer(index, 2);
+	                    optionsContainer.appendChild(button);
+	                });
+	                break;
+                case 2:
+	                questionContainer.textContent = "Question 3 of 4: Which one of these were a release title on the PS3?";
+	                ["Little Big Planet", "Killzone 3", "Ratchet and Clank: Rift Apart", "Resistance: Fall of Man"].forEach((option, index) => {
+	                    const button = document.createElement("button");
+	                    button.textContent = option;
+	                    button.onclick = () => checkAnswer(index, 3);
+	                    optionsContainer.appendChild(button);
+	                });
+	                break;
+                    case 3:
+	                questionContainer.textContent = "Question 4 of 4: What Country is Lionel Messi from?";
+	                ["Canada", "Argentina", "Italy", "Portugal"].forEach((option, index) => {
+	                    const button = document.createElement("button");
+	                    button.textContent = option;
+	                    button.onclick = () => checkAnswer(index, 1);
+	                    optionsContainer.appendChild(button);
+                    });
+                default:
+                questionContainer.textContent = ""; // makes sure questions are all removed
+                    Results(); // calls results to display to user
+                    return;
+}
+}
+function nextQuestion() {
+    indexPresentQuestion++; // index up
+	Question();  // function call
+    document.getElementById("next-button").classList.add("hidden"); //hides existing question for new one
+}
+
+function checkAnswer(indexChoice, indexCorrect) {
+    //creates variables for containers
+    const feedback = document.getElementById("feedback");
+    const optionsContainer = document.getElementById("answers-container");
+   
+    //clears the answer for all questions
+    Array.from(optionsContainer.children).forEach(button => {
+        button.classList.remove("correct", "incorrect");
+    });
+
+    //stores the users option
+    const chosenButton = optionsContainer.children[indexChoice];
+
+    //if the index/option the user chose is correct raise their score and add the option they chose as correct"
+    if (indexChoice === indexCorrect) {
+        feedback.textContent = "Correct!";
+        score++;
+        chosenButton.classList.add("correct");
+        //if the index/option the user chose is incorrect add the option they chose as incorrect and find correct amswer"
+    } else {
+        feedback.textContent = "Your choice is incorrect.";
+        chosenButton.classList.add("incorrect");
+        const buttons = optionsContainer.getElementsByTagName("button");
+        buttons[indexCorrect].classList.add("correct");
+        }
+
+    document.getElementById("next-button").classList.remove("hidden");
+
+    
+}
+
+function Results() {
+    //displays results hides unneccesary buttons
+	document.getElementById("quiz-container").classList.add("hidden");
+	document.getElementById("result-container").classList.remove("hidden");
+    document.getElementById("next-button").classList.add("hidden");
+	document.getElementById("score").textContent = score + "/" + 4; 
+}
+
+</script>
+
+
+
+</body>
+
+</html>
